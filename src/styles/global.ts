@@ -20,6 +20,10 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
+  #main-container {
+    padding: 0;
+  }
+
   .d-mobile-none {
     @media only screen and (max-width: 720px) {
       display: none;
