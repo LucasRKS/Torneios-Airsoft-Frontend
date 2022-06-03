@@ -10,6 +10,7 @@ export const GlobalStyle = createGlobalStyle`
 
   body, input, button {
     font-size: 26px;
+    background-color: #c515c5;
   }
 
   h1, h2, h3, h4, h5, h6, strong {
