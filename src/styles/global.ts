@@ -5,12 +5,15 @@ export const GlobalStyle = createGlobalStyle`
   body {
     background: #FFF;
     color: #3a3a3a;
+    background: rgb(2,0,36);
+    height: 100vh;
     -webkit-font-smoothing: antialiased;
+    padding-top: 20px;
+    font-family: 'Montserrat', sans-serif;
   }
 
   body, input, button {
-    font-size: 26px;
-    background-color: #c515c5;
+    font-size: 18px;
   }
 
   h1, h2, h3, h4, h5, h6, strong {

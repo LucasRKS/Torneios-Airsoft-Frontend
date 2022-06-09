@@ -62,7 +62,7 @@ const SignIn: React.FC = () => {
 
   return (
     <section>
-      <div className="container-fluid h-custom mt-3">
+      <div className="container-fluid">
         <Container>
           <div className="row d-flex justify-content-center align-items-center h-100">
             <div className="col-md-9 col-lg-6 col-xl-5">

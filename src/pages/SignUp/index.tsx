@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import React, {
   useRef, useCallback, useEffect,
 } from 'react';
@@ -9,6 +10,7 @@ import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 
 import Input from '../../components/Input';
+import InputMask from '../../components/InputMask';
 
 import { Container } from './styles';
 
@@ -31,48 +33,50 @@ const SignIn: React.FC = () => {
     }
   });
 
-  const handleSubmit: SubmitHandler<any> = useCallback(
-    async (data: SignUpFormData) => {
-      try {
-        formRef.current?.setErrors({});
+  const handleSubmit: SubmitHandler<any> = async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors({});
 
-        const schema = Yup.object().shape({
-          email: Yup.string().required('O e-mail é obrigatório'),
-          password: Yup.string().required('A senha é obrigatória'),
-          password2: Yup.string().required('A senha é obrigatória'),
-          cpf: Yup.string().required('O cpf é obrigatório'),
-          name: Yup.string().required('O nome é obrigatório'),
-        });
+      const schema = Yup.object().shape({
+        email: Yup.string().required('O e-mail é obrigatório'),
+        password: Yup.string().required('A senha é obrigatória'),
+        password2: Yup.string().required('A senha é obrigatória'),
+        cpf: Yup.string().required('O cpf é obrigatório'),
+        name: Yup.string().required('O nome é obrigatório'),
+      });
 
-        await schema.validate(data, {
-          abortEarly: false,
-        });
+      await schema.validate(data, {
+        abortEarly: false,
+      });
 
-        await api.post('/users', {
-          email: data.email,
-          password: data.password,
-          name: data.name,
-          cpf: data.cpf,
-        });
-
-        await signIn({
-          email: data.email,
-          password: data.password,
-        });
-
-        navigate('/ranking');
-      } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          err.inner.forEach((error) => {
-            if (error.path) {
-              formRef.current?.setFieldError(error.path, error.message);
-            }
-          });
-        }
+      if (data.password !== data.password2) {
+        formRef.current?.setFieldError('password2', 'As senhas não conferem');
+        return;
       }
-    },
-    [navigate, signIn],
-  );
+
+      await api.post('/users', {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        cpf: data.cpf,
+      });
+
+      await signIn({
+        email: data.email,
+        password: data.password,
+      });
+
+      navigate('/ranking');
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach((error) => {
+          if (error.path) {
+            formRef.current?.setFieldError(error.path, error.message);
+          }
+        });
+      }
+    }
+  };
 
   return (
     <section>
@@ -91,11 +95,11 @@ const SignIn: React.FC = () => {
                 <div className="form-outline mb-4">
                   <Form ref={formRef} onSubmit={handleSubmit}>
                     <div className="form-outline mb-3">
-                      <Input
-                        type="text"
+                      <InputMask
                         name="cpf"
                         className="form-control form-control-lg"
                         placeholder="Informe seu cpf"
+                        mask="999.999.999-99"
                         label="CPF"
                       />
                     </div>
