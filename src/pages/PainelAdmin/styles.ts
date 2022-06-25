@@ -24,4 +24,8 @@ export const Container = styled.div`
   .txt-danger {
     color: red;
   }
+
+  .btn-time {
+    margin-left: 20px;
+  }
 `;

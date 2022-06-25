@@ -1,13 +1,8 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable import/extensions */
-/* eslint-disable no-param-reassign */
-/* eslint-disable array-callback-return */
 import React, {
-  useRef, useCallback, useEffect, useState,
+  useRef, useEffect, useState,
 } from 'react';
 import { Form } from '@unform/web';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { FormHandles, SubmitHandler } from '@unform/core';
 import * as Yup from 'yup';
 import { DataGrid } from '@mui/x-data-grid';
@@ -33,9 +28,6 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    if (!user) {
-      navigate('/');
-    }
 
     async function getDashboard():Promise<any> {
       const { data }:any = await api.get('/times/dashboard');
@@ -50,16 +42,18 @@ const Dashboard: React.FC = () => {
       setTableData(newData);
       setOptions(newDataOptions);
     }
+
     async function getUsers():Promise<any> {
       const { data }:any = await api.get('/users');
       const newDataOptions : any = [];
       data.forEach((u : any) => {
-        const selectObject = { value: u.id, label: u.name };
+        const selectObject = { value: u.id, label: `${u.cpf} - ${u.name}` };
         newDataOptions.push(selectObject);
       });
       setOptions(newDataOptions);
       setLoading(false);
     }
+
     getDashboard();
     getUsers();
   }, []);
@@ -72,7 +66,7 @@ const Dashboard: React.FC = () => {
 
       await api.post('/times', submitData);
 
-      navigate('/');
+      navigate(0);
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         err.inner.forEach((error) => {
@@ -87,11 +81,10 @@ const Dashboard: React.FC = () => {
   const handleClearTable:any = async () => {
     await api.get('/times/clear');
 
-    navigate('/');
+    navigate(0);
   };
 
   const handleSelectChange = (e:any):any => {
-    console.log(e.value);
     setSelectedUser(e.value);
   };
 
@@ -137,27 +130,28 @@ const Dashboard: React.FC = () => {
             <h1>Arena TK - Ranking torneios de precisão</h1>
           </div>
         </div>
-        <div className="row">
-          <div className="col-3">
-            <p>Olá, <b>{user && user.name}</b></p>
+        {!user && (
+          <div className="row">
+            <div className="col-12">
+              Participando do torneio? <Link to="/cadastro" className="crie-conta">crie uma conta aqui.</Link>
+            </div>
           </div>
-          <div className="col-3" />
-          <div className="col-3" />
-          <div className="col-3 align-txt-right">
-            <button type="button" className="btn txt-danger" onClick={handleSignOut}>Fazer loggout</button>
-          </div>
-        </div>
+        )}
         {user && user.admin && !loading && (
-        <div className="row">
-          <div className="col-3">
-            <button type="button" className="btn btn-tk" onClick={openModal}>Criar registro</button>
+          <div className="row">
+            <div className="col col-md-9 col-sm-12">
+              <p>Olá, <b>{user.name}</b><button type="button" className="btn txt-danger" onClick={handleSignOut}> | Sair</button></p>
+            </div>
+            <div className="col-12 py-1">
+              <button type="button" className="btn btn-tk" onClick={openModal}>Criar registro</button>
+            </div>
+            <div className="col-12 py-1">
+              <button type="button" className="btn btn-danger" onClick={openModalConfirm}>Limpar registros</button>
+            </div>
+            <div className="col-12 py-1">
+              <Link to="/excluir-unico" className="btn btn-danger">Limpar registro único</Link>
+            </div>
           </div>
-          <div className="col-3" />
-          <div className="col-3" />
-          <div className="col-3 align-txt-right">
-            <button type="button" className="btn btn-danger" onClick={openModalConfirm}>Limpar registros</button>
-          </div>
-        </div>
         )}
         <div className="row mt-3">
           <div className="col col-12">
@@ -166,6 +160,20 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
+        {user && user.admin && !loading && (
+          <div className="row py-2">
+            <div className="col col-md-3 col-sm-12">
+              <Link to="/painel-admin" className="btn btn-info">Painel - aprovar admins</Link>
+            </div>
+          </div>
+        )}
+        {!user && (
+          <div className="row py-3">
+            <div className="col-12">
+              Administrador do torneio? <Link to="/login" className="crie-conta">entre aqui.</Link>
+            </div>
+          </div>
+        )}
       </Container>
       {user && user.admin && (
         <>

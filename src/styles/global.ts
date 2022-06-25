@@ -6,9 +6,8 @@ export const GlobalStyle = createGlobalStyle`
     background: #FFF;
     color: #3a3a3a;
     background: rgb(2,0,36);
-    height: 100vh;
+    height: 100%;
     -webkit-font-smoothing: antialiased;
-    padding-top: 20px;
     font-family: 'Montserrat', sans-serif;
   }
 

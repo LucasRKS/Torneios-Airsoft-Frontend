@@ -16,18 +16,20 @@ import { Container } from './styles';
 
 interface SignUpFormData {
   email: string;
+  password: string;
+  password2: string;
   cpf: string;
   name: string;
 }
 
-const SignUp: React.FC = () => {
+const SignUpAdmin: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      navigate('/ranking');
+      navigate('/');
     }
   });
 
@@ -37,6 +39,8 @@ const SignUp: React.FC = () => {
 
       const schema = Yup.object().shape({
         email: Yup.string().required('O e-mail é obrigatório'),
+        password: Yup.string().required('A senha é obrigatória'),
+        password2: Yup.string().required('A senha é obrigatória'),
         cpf: Yup.string().required('O cpf é obrigatório'),
         name: Yup.string().required('O nome é obrigatório'),
       });
@@ -45,8 +49,14 @@ const SignUp: React.FC = () => {
         abortEarly: false,
       });
 
+      if (data.password !== data.password2) {
+        formRef.current?.setFieldError('password2', 'As senhas não conferem');
+        return;
+      }
+
       await api.post('/users', {
         email: data.email,
+        password: data.password,
         name: data.name,
         cpf: data.cpf,
       });
@@ -106,6 +116,24 @@ const SignUp: React.FC = () => {
                         label="E-mail"
                       />
                     </div>
+                    <div className="form-outline mb-3">
+                      <Input
+                        type="password"
+                        name="password"
+                        className="form-control form-control-lg"
+                        placeholder="Informe sua senha"
+                        label="Senha"
+                      />
+                    </div>
+                    <div className="form-outline mb-3">
+                      <Input
+                        type="password"
+                        name="password2"
+                        className="form-control form-control-lg"
+                        placeholder="Confirme sua senha"
+                        label="Confirme sua senha"
+                      />
+                    </div>
                     <div className="text-center text-lg-start mt-4 pt-2">
                       <button type="submit" className="btn btn-primary btn-lg">Cadastrar</button>
                     </div>
@@ -120,4 +148,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default SignUpAdmin;

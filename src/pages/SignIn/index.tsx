@@ -1,5 +1,5 @@
 import React, {
-  useRef, useCallback, useState, useEffect,
+  useRef, useCallback, useEffect,
 } from 'react';
 import { Form } from '@unform/web';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ const SignIn: React.FC = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/ranking');
+      navigate('/');
     }
   });
 
@@ -46,7 +46,7 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
 
-        navigate('/ranking');
+        navigate('/');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           err.inner.forEach((error) => {
@@ -96,13 +96,6 @@ const SignIn: React.FC = () => {
                     </div>
                     <div className="text-center text-lg-start mt-4 pt-2">
                       <button type="submit" className="btn btn-primary btn-lg">Entrar</button>
-                      <p className="small fw-bold mt-2 pt-1 mb-0">Não possui uma conta?<br />
-                        <Link
-                          to="/cadastro"
-                          className="link-danger"
-                        >Criar
-                        </Link>
-                      </p>
                     </div>
                   </Form>
                 </div>
